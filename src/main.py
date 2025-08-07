@@ -1,3 +1,4 @@
-import src.experiments.exp1.cli as cli
+from experiments.exp1 import cli
 
-cli.menu()
+if __name__ == "__main__":
+    cli.menu()

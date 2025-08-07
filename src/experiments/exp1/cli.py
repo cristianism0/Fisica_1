@@ -1,59 +1,60 @@
 import shared.metrics as mt
+import shared.config as cnf
 import os
 import pandas as pd
 
-def up_option(new_data, path = 'lab1/data/'):
-    """Asks for update"""
-    opt = input("Deseja criar CSV? [S/n]: ").strip().lower()
-    if opt == 's':
-        nome = input("Insira o nome do arquivo: ").strip()
-        new_data.to_csv(path + nome + '.csv', mode='x', index=False)
-        return new_data
-    else:
-        return None
-
-def list_data_dir(path='lab1/data/'):
-    files = [f.replace('.csv', '') for f in os.listdir(path)]
-    names = ', '.join(files)
-    return names
 
 def exp_values(name: str):
-    df = mt.df_maker(name)
-    try:
-        if "mean" in df.columns and "std" in df.columns:
-            result = pd.DataFrame(mt.get_exp_values(df['mean'].values, df['std'].values), columns='Dados Experimentais')
+    """Calculates the Experimental Value of a table with [mean] and [std]"""
+    df = cnf.df_maker(name)
+    if "mean" in df.columns and "std" in df.columns:
+            result = pd.DataFrame(mt.get_exp_values(df['mean'].values, df['std'].values), columns= ['Dados Experimentais'])
             return result
-    except Exception as e:
-        print("Não foi possível concluir a operação:", e)
-        return None
+    else:
+         print("Não foi encotrada as tabelas [mean] e [std] em: ", name, ". Por favor, verifique a tabela!" )
 
 def menu():
-    df = mt.df_maker('lab1')
     print("LABORATÓRIO DE FÍSICA 1 - MECÂNICA CLÁSSICA\n\n")
-    print("Dados atuais: \n", df, "\n")
     print("Opções de Análise de Dados:")
+    print("Lista de planilhas em data/: ", cnf.list_data_dir(path = cnf.DATA_PATH))
 
-    print("""1. Desvio Padrão de Média\n
-2. Valores Experimentais (requer média e desvio padrão)\n
-3. Propagações de Error\n
-q. Sair""")
-    
+    #Pede o DataFrame inicial
+    name = input("Digite o nome do planilha de dados: ")
 
+    #Captura o erro caso não insira corretamente a planilha
+    try:
+        df = cnf.df_maker(name)
+    except Exception as e:
+        print("Planilha não indentificada: ", e, ". Por favor, verifique a tabela!")
+        return None
+
+    #Inicia a interface de interação
     while True:
+
+        print("\n" + "=" * 50)                                              #Linha de separação do menu
+        print("1. Desvio Padrão de Média\n")
+        print("2. Valores Experimentais (requer média e desvio padrão): \n")
+        print("3. Propagação de Erros\n")
+        print("q. Sair")
+        print("\n" + "=" * 50)  
+
+        #Dá a escolha de interação para o usuário baseado no menu
         option = input("Escolha uma opção [1/2/3/q]: ").strip().lower()
+
         match option:
 
             case '1':
                 result = mt.mean_std(df).dropna()
                 print(result)
-                return up_option(result)
-            
+                cnf.csv_creater(result, path = cnf.DATA_PATH)
+                    
             case '2':
-                print("Qual o nome do arquivo onde está localizado [mean] e [std]? ", list_data_dir())
-                name = input()
-                result = exp_values(name)
+                print("Nome do arquivo com [mean] e [std]:", cnf.list_data_dir(cnf.DATA_PATH))
+                file_name = input()
+                result = exp_values(file_name)
                 print(result)
-                return up_option(result)
+                cnf.csv_creater(result, path = cnf.DATA_PATH)
+
             case 'q':
                 print("Encerrando...")
                 break

@@ -1,17 +1,14 @@
 import pandas as pd
 import numpy as np
 
-def df_maker(name):
-    return pd.read_csv("lab1/data/" + name + '.csv') 
-
 def mean_std(data: pd.DataFrame) -> pd.DataFrame:
     """Returns a DataFrame with mean and standard deviation for each column."""
     means = data.mean()
-    stds = data.std(ddof=0)  # ddof=0 → desvio padrão populacional (desvio padrão de média), usado em laboratório
+    stds = data.std(ddof=0)  # ddof=0 → population standart deviation (laboratory)
     return pd.DataFrame({'mean': means, 'std': stds})
 
 def get_exp_values(means: np.ndarray, stds: np.ndarray) -> np.ndarray:
-    """Calcula X_exp = mean - std para cada grandeza."""
+    """Calculates the experimental value: Cexp = C + |error|"""
     return np.subtract(means, stds)
 
 def error_sum(oA: float, oB: float) -> float:
