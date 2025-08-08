@@ -1,4 +1,4 @@
-import shared.metrics as mt
+import modules.metrics as mt
 import shared.config as cnf
 import pandas as pd
 
