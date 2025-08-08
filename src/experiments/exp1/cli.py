@@ -1,6 +1,5 @@
 import shared.metrics as mt
 import shared.config as cnf
-import os
 import pandas as pd
 
 
@@ -13,6 +12,18 @@ def exp_values(name: str):
     else:
          print("Não foi encotrada as tabelas [mean] e [std] em: ", name, ". Por favor, verifique a tabela!" )
 
+def error_choice() -> str:
+    """Choice a Error metrics based on the equation"""
+    print("Escolha uma opção de erro baseada na equação de estudo: \n")
+    print("1. Soma => w = x+-y \n")
+    print("2. Multiplicação ou Divisão => w = axy ou a(y/x) \n")
+    print("3. Potência (expoente constante) => w = x^m \n")
+    print("4. Polinômio Misto (expoentes constantes) => w = ax^py^m \n")
+
+    choice = input("Digite a sua escolha [1,2,3,4]: ")
+    return choice
+
+
 def menu():
     print("LABORATÓRIO DE FÍSICA 1 - MECÂNICA CLÁSSICA\n\n")
     print("Opções de Análise de Dados:")
@@ -24,6 +35,10 @@ def menu():
     #Captura o erro caso não insira corretamente a planilha
     try:
         df = cnf.df_maker(name)
+
+        #Recolhe as colunas para formatar os outros DataFrames
+        columns = cnf.columns_extract(df)
+
     except Exception as e:
         print("Planilha não indentificada: ", e, ". Por favor, verifique a tabela!")
         return None
@@ -33,27 +48,40 @@ def menu():
 
         print("\n" + "=" * 50)                                              #Linha de separação do menu
         print("1. Desvio Padrão de Média\n")
-        print("2. Valores Experimentais (requer média e desvio padrão): \n")
-        print("3. Propagação de Erros\n")
+        print("2. Valores Experimentais (requer [mean] e [std]): \n")
+        print("3. Propagação de Erros (requer [std]) \n")
         print("q. Sair")
         print("\n" + "=" * 50)  
 
         #Dá a escolha de interação para o usuário baseado no menu
         option = input("Escolha uma opção [1/2/3/q]: ").strip().lower()
 
+        #Inicia a I/O do usuário
         match option:
 
             case '1':
-                result = mt.mean_std(df).dropna()
+                result = mt.mean_std(df).dropna()  #######
                 print(result)
                 cnf.csv_creater(result, path = cnf.DATA_PATH)
                     
             case '2':
-                print("Nome do arquivo com [mean] e [std]:", cnf.list_data_dir(cnf.DATA_PATH))
-                file_name = input()
-                result = exp_values(file_name)
-                print(result)
-                cnf.csv_creater(result, path = cnf.DATA_PATH)
+                try:
+                    print("Nome do arquivo com [mean] e [std]:", cnf.list_data_dir(cnf.DATA_PATH))
+                    file_name = input()
+                    result = exp_values(file_name)
+                    print(result)
+                    cnf.csv_creater(result, path = cnf.DATA_PATH)
+                except Exception as e:
+                    print("Planilha não indentificada: ", e, ". Por favor, verifique a tabela!")
+                    return None
+                
+            case '3':
+                choice = error_choice()
+
+                match choice:
+
+                    case '1':
+                        break
 
             case 'q':
                 print("Encerrando...")
