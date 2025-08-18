@@ -1,11 +1,12 @@
-import modules.metrics as mt
-import shared.config as cnf
+from src.modules import metrics as mt
+from src.modules import utils as ut
+from shared.config import DATA_PATH, EXPERIMENT_PATH
 import pandas as pd
-
 
 def exp_values(name: str):
     """Calculates the Experimental Value of a table with [mean] and [std]"""
-    df = cnf.df_maker(name)
+
+    df = ut.df_maker(name)
     if "mean" in df.columns and "std" in df.columns:
             result = pd.DataFrame(mt.get_exp_values(df['mean'].values, df['std'].values), columns= ['Dados Experimentais'])
             return result
@@ -14,6 +15,7 @@ def exp_values(name: str):
 
 def error_choice() -> str:
     """Choice a Error metrics based on the equation"""
+
     print("Escolha uma opção de erro baseada na equação de estudo: \n")
     print("1. Soma => w = x+-y \n")
     print("2. Multiplicação ou Divisão => w = axy ou a(y/x) \n")
@@ -27,17 +29,14 @@ def error_choice() -> str:
 def menu():
     print("LABORATÓRIO DE FÍSICA 1 - MECÂNICA CLÁSSICA\n\n")
     print("Opções de Análise de Dados:")
-    print("Lista de planilhas em data/: ", cnf.list_data_dir(path = cnf.DATA_PATH))
+    print("Lista de planilhas em data/: ", ut.list_data_dir(path = DATA_PATH))
 
     #Pede o DataFrame inicial
     name = input("Digite o nome do planilha de dados: ")
 
     #Captura o erro caso não insira corretamente a planilha
     try:
-        df = cnf.df_maker(name)
-
-        #Recolhe as colunas para formatar os outros DataFrames
-        columns = cnf.columns_extract(df)
+        df = ut.df_maker(name)
 
     except Exception as e:
         print("Planilha não indentificada: ", e, ". Por favor, verifique a tabela!")
@@ -62,15 +61,15 @@ def menu():
             case '1':
                 result = mt.mean_std(df).dropna()  #######
                 print(result)
-                cnf.csv_creater(result, path = cnf.DATA_PATH)
+                ut.csv_creater(result, path = DATA_PATH)
                     
             case '2':
                 try:
-                    print("Nome do arquivo com [mean] e [std]:", cnf.list_data_dir(cnf.DATA_PATH))
+                    print("Nome do arquivo com [mean] e [std]:", ut.list_data_dir(DATA_PATH))
                     file_name = input()
                     result = exp_values(file_name)
                     print(result)
-                    cnf.csv_creater(result, path = cnf.DATA_PATH)
+                    ut.csv_creater(result, path = DATA_PATH)
                 except Exception as e:
                     print("Planilha não indentificada: ", e, ". Por favor, verifique a tabela!")
                     return None

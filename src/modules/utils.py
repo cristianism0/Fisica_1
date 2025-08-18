@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 
-
 def list_data_dir(path= 'data/'):
     """Returns a all files in data/ directory"""
     files = [f.replace('.csv', '') for f in os.listdir(path)]
