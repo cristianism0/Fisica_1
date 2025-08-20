@@ -5,7 +5,9 @@ def mean_std(data: pd.DataFrame) -> pd.DataFrame:
     """Returns a DataFrame with mean and standard deviation for each column."""
     means = data.mean()
     stds = data.std(ddof=0)  # ddof=0 → population standart deviation (laboratory)
-    return pd.DataFrame({'mean': means, 'std': stds})
+    df = pd.DataFrame({'mean': means, 'std': stds})
+    df.index.name = "medidas"
+    return df
 
 def get_exp_values(means: np.ndarray, stds: np.ndarray) -> np.ndarray:
     """Calculates the experimental value: Cexp = C + |error|"""

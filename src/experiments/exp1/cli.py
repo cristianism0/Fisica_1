@@ -7,9 +7,11 @@ def exp_values(name: str):
     """Calculates the Experimental Value of a table with [mean] and [std]"""
 
     df = ut.df_maker(name)
+
     if "mean" in df.columns and "std" in df.columns:
             result = pd.DataFrame(mt.get_exp_values(df['mean'].values, df['std'].values), columns= ['Dados Experimentais'])
             return result
+    
     else:
          print("Não foi encotrada as tabelas [mean] e [std] em: ", name, ". Por favor, verifique a tabela!" )
 
@@ -37,6 +39,7 @@ def menu():
     #Captura o erro caso não insira corretamente a planilha
     try:
         df = ut.df_maker(name)
+        df_columns = ut.columns_extract(df)
 
     except Exception as e:
         print("Planilha não indentificada: ", e, ". Por favor, verifique a tabela!")
@@ -59,7 +62,7 @@ def menu():
         match option:
 
             case '1':
-                result = mt.mean_std(df).dropna()  #######
+                result = mt.mean_std(df)
                 print(result)
                 ut.csv_creater(result, path = DATA_PATH)
                     
@@ -68,6 +71,8 @@ def menu():
                     print("Nome do arquivo com [mean] e [std]:", ut.list_data_dir(DATA_PATH))
                     file_name = input()
                     result = exp_values(file_name)
+                    result.index = df_columns
+                    result.index.name = "medidas"
                     print(result)
                     ut.csv_creater(result, path = DATA_PATH)
                 except Exception as e:
@@ -75,13 +80,46 @@ def menu():
                     return None
                 
             case '3':
+                # Escolhe o tipo de equação
                 choice = error_choice()
 
                 match choice:
-
                     case '1':
-                        break
-
+                        try:
+                            oA, oB = input("Insira o desvio de X e Y separados por vírgula: ")
+                            result = mt.error(oA,oB)
+                            ut.csv_creater(result, path =DATA_PATH).set_index()
+                        except Exception as e:
+                            print("Ocorreu um erro", e, "Por favor! Tente novamente!")
+                            return None
+                        
+                    case '2':
+                        try:
+                            A, B, oA, oB, W = input("Insira os valores de: X, Y, desvio de X e Y e o valor esperado da equação W = axy, separados por vírgula: ")
+                            result = mt.error_mult_div(A, B, oA, oB, W)
+                            ut.csv_creater(result, path =DATA_PATH)
+                        except Exception as e:
+                            print("Ocorreu um erro", e, "Por favor! Tente novamente!")
+                            return None
+                        
+                    case '3':
+                        try:
+                            A, oA, W, m = input("Insira os valores de: X, desvio de X, o valor previsto de W = x^y e o expoente separados por virgula: ")
+                            result = mt.error_power(A, oA, W, m)
+                            ut.csv_creater(result, path =DATA_PATH)
+                        except Exception as e:
+                            print("Ocorreu um erro", e, "Por favor! Tente novamente!")
+                            return None
+                        
+                    case '4':
+                        try:
+                            A, oA, B, oB, W, m, p = input("Insira os valores de: X, desvio de X, Y, desvio de Y, valor esperado da equação, potencia de X e potencia de Y separados por virgula: ")
+                            result = mt.error_multi_poli(A, oA, B, oB, W, m, p)
+                            ut.csv_creater(result, path =DATA_PATH)
+                        except Exception as e:
+                            print("Ocorreu um erro", e, "Por favor! Tente novamente!")
+                            return None
+            #Saída
             case 'q':
                 print("Encerrando...")
                 break

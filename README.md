@@ -8,6 +8,7 @@ Este projeto visa o estudo e a utilização de métricas para processamento e an
 
 - Aprofundamento em física e métricas de análise
 - Uso de pandas para ler e explorar dados
+- CRUD
 - Modularização de projetos em Python
 - Prática de `clean code`
 
@@ -21,7 +22,6 @@ Este projeto visa o estudo e a utilização de métricas para processamento e an
 ├── src/
 │   ├── main.py          # Ponto de entrada do projeto
 │   ├── modules/         # Módulos de métricas e utilidades
-│   └── experiments/     # Experimentos organizados por pasta
 ├── requirements.txt     # Dependências do projeto
 └── README.md            # Este arquivo
 ```
