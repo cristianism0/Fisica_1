@@ -60,7 +60,7 @@ Este projeto visa o estudo e a utilização de métricas para processamento e an
 
 ## Como Usar
 
-1. Adicione suas planilhas de dados em `data/` seguindo o formato dos exemplos (`lab1.csv`, `lab2.csv`).
+1. Adicione suas planilhas de dados em `data/` seguindo o formato do exemplo (`lab1.csv`).
 
 2. Execute o programa principal:
    ```sh
