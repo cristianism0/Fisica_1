@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def calc_mean_std(data: pd.DataFrame) -> pd.DataFrame:
     """
     Lê um DataFrame e retorna um Dataframe com as colunas: [medidas, mean, std]
